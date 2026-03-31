@@ -1,0 +1,56 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+```
+
+```{css}
+
+```
+
+## Tracking study space conditions
+
+This dynamic report tracks study space conditions using observations of available seats, observed activity, noise level, and time of day.
+
+```{r}
+library(tidyverse)
+
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vRkFZzJSUqhlUpl_1ivwLrWS3zQcWhlVfIyF-KC_Lhsbc6O3w4Mbp9x10NOvznU_efAe793qGk7aaAS/pub?output=csv")
+
+latest_data <- logged_data %>%
+  rename(
+    available_seats = 2,
+    observed_activity = 3,
+    noise_level = 4,
+    time_of_day = 5
+  )
+```
+
+The minimum number of available seats observed was `r min(latest_data$available_seats, na.rm = TRUE)`.
+
+The average number of available seats observed was `r mean(latest_data$available_seats, na.rm = TRUE)`.
+
+```{r}
+ggplot(latest_data, aes(x = noise_level, fill = noise_level)) +
+  geom_bar() +
+  labs(
+    title = "Count of observations by noise level",
+    x = "Noise level",
+    y = "Count",
+    caption = "Source: logged_data"
+  )
+```
+
+```{r}
+ggplot(latest_data, aes(x = observed_activity, fill = observed_activity)) +
+  geom_bar() +
+  labs(
+    title = "Count of observations by observed activity",
+    x = "Observed activity",
+    y = "Count",
+    caption = "Source: logged_data"
+  )
+```
